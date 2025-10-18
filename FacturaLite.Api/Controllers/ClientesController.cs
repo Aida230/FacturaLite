@@ -35,6 +35,28 @@ namespace FacturaLite.Api.Controllers
         // DTO de entrada para crear (evitamos exponer toda la entidad al crear)
         public record CrearClienteDto(string Nombre, string? Email, string? Nif, string? Telefono, string? Direccion);
 
+        // DTO para actualizar (todos opcionales; solo cambia lo que envías)
+        public record ActualizarClienteDto(string? Nombre, string? Email, string? Nif, string? Telefono, string? Direccion);
+
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult<Cliente>> Put(int id, [FromBody] ActualizarClienteDto dto)
+        {
+            var cliente = await _db.Clientes.FindAsync(id);
+            if (cliente is null || !cliente.Activo)
+                return NotFound(); // 404 si no existe o está inactivo
+
+            // Si se envía un campo, se actualiza; si viene null, se deja como está
+            if (!string.IsNullOrWhiteSpace(dto.Nombre)) cliente.Nombre = dto.Nombre.Trim();
+            if (dto.Email is not null) cliente.Email = string.IsNullOrWhiteSpace(dto.Email) ? null : dto.Email.Trim();
+            if (dto.Nif is not null) cliente.Nif = string.IsNullOrWhiteSpace(dto.Nif) ? null : dto.Nif.Trim();
+            if (dto.Telefono is not null) cliente.Telefono = string.IsNullOrWhiteSpace(dto.Telefono) ? null : dto.Telefono.Trim();
+            if (dto.Direccion is not null) cliente.Direccion = string.IsNullOrWhiteSpace(dto.Direccion) ? null : dto.Direccion.Trim();
+
+            await _db.SaveChangesAsync(); // guarda cambios
+            return Ok(cliente);           // 200 con el cliente modificado
+        }
+
+
         // POST /api/clientes
         // Crea un cliente nuevo con validación mínima.
         [HttpPost]
@@ -73,5 +95,20 @@ namespace FacturaLite.Api.Controllers
 
             return Ok(cliente);
         }
+        // DELETE /api/clientes/{id}
+        // "Borrado suave": marca el cliente como inactivo en lugar de eliminarlo.
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var cliente = await _db.Clientes.FindAsync(id);
+            if (cliente is null || !cliente.Activo)
+                return NotFound(); // 404 si no existe o ya estaba inactivo
+
+            cliente.Activo = false;       // lo desactivamos
+            await _db.SaveChangesAsync(); // guardamos cambio
+
+            return NoContent(); // 204 sin contenido (operación OK)
+        }
+
     }
 }

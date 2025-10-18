@@ -79,29 +79,15 @@ Ve al explorador de VS Code y comprueba que:
 
 Mini-paso: crear el endpoint /api/clientes (listar y crear)
 1) Habilitar controladores en Program.cs
-
 Abre FacturaLite.Api/Program.cs y añade estas dos cosas:
-
-Arriba del archivo (si no están):
-
-using Microsoft.EntityFrameworkCore;
-using FacturaLite.Api.Infrastructure.Persistence;
-
-
+  Arriba del archivo (si no están):
+    using Microsoft.EntityFrameworkCore;
+    using FacturaLite.Api.Infrastructure.Persistence;
 Después de var builder = WebApplication.CreateBuilder(args);, agrega:
-
-builder.Services.AddControllers(); // habilita controladores [ApiController]
-
-
+  builder.Services.AddControllers(); // habilita controladores [ApiController]
 Antes de app.Run();, agrega:
-
-app.MapControllers(); // mapea rutas de los controladores a HTTP
-
-
+  app.MapControllers(); // mapea rutas de los controladores a HTTP
 Con esto, la API ya entiende clases “Controller”.
-
 2) Crear el controlador ClientesController
-
-Crea el archivo:
-
-FacturaLite.Api/Controllers/ClientesController.cs
+  Crea el archivo:
+    FacturaLite.Api/Controllers/ClientesController.cs
