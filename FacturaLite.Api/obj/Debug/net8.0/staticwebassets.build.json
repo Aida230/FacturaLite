@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "Bm1nZvnpejwc2syqMeAUfYhHSIV8UkvP8yWPw9yN3Zg=",
+  "Source": "FacturaLite.Api",
+  "BasePath": "_content/FacturaLite.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
