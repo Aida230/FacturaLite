@@ -1,6 +1,13 @@
+using FacturaLite.Api.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
+
 // Crea el "constructor" de la aplicación. 
 // Aquí se configuran los servicios que la app usará: controladores, base de datos, CORS, Swagger, etc.
 var builder = WebApplication.CreateBuilder(args);
+
+// Registramos el DbContext y le decimos que use SQLite con la conexión del appsettings.json
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // ---------------------------------------------------------
 // 🧩 Sección: Registro de servicios

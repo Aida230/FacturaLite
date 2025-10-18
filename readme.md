@@ -38,3 +38,26 @@ Estos paquetes permiten:
 
 Siguientepaso:
   -crear la clase cliente
+  -crear infraestructura
+  -crear conexion: en el archivo FacturaLite.Api/appsettings.json tenemos que añadir este bloque
+          "ConnectionStrings": {
+            "DefaultConnection": "Data Source=FacturaLite.db"
+          }
+
+
+          el archivo completo debe verse asi:
+            {
+            "Logging": {
+              "LogLevel": {
+                "Default": "Information",
+                "Microsoft.AspNetCore": "Warning"
+              }
+            },
+            "AllowedHosts": "*",
+            "ConnectionStrings": {
+              "DefaultConnection": "Data Source=FacturaLite.db"
+            }
+          }
+          🧠 Esto crea una base de datos llamada FacturaLite.db (un archivo) en la carpeta del proyecto.
+
+2️⃣ Registrar el AppDbContext en Program.cs
