@@ -61,3 +61,19 @@ Siguientepaso:
           🧠 Esto crea una base de datos llamada FacturaLite.db (un archivo) en la carpeta del proyecto.
 
 2️⃣ Registrar el AppDbContext en Program.cs
+
+Migración inicial y crear FacturaLite.db
+1️⃣ Crear la migración
+En la terminal, dentro de la carpeta del proyecto principal (FacturaLite): dotnet ef migrations add InitClientes --project FacturaLite.Api
+  📦 Esto generará una nueva carpeta en FacturaLite.Api/Migrations con:
+      Un archivo con código C# que representa la estructura de tu tabla Clientes.
+      Un ModelSnapshot, que guarda el “estado actual” del modelo.
+2️⃣ Aplicar la migración (crear la BD real): dotnet ef database update --project FacturaLite.Api
+  Esto:
+    Creará un archivo llamado FacturaLite.db en FacturaLite.Api/
+    Ejecutará el SQL que creó EF para generar la tabla Clientes.
+3️⃣ Verificación
+Ve al explorador de VS Code y comprueba que:
+  Existe la carpeta FacturaLite.Api/Migrations
+  Y que aparece el archivo FacturaLite.db
+
