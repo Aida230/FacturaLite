@@ -14,8 +14,7 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod());
 });
 
-builder.Services.AddControllers(); // ya lo tenías
-
+builder.Services.AddControllers();
 
 // Registramos el DbContext y le decimos que use SQLite con la conexión del appsettings.json
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -50,43 +49,9 @@ if (app.Environment.IsDevelopment())
 
 // Redirige automáticamente las peticiones HTTP a HTTPS
 // (por ejemplo, de http://localhost:5000 → https://localhost:7000)
-app.UseHttpsRedirection();
-
-// ---------------------------------------------------------
-// 🧩 Sección: Endpoint de ejemplo
-// ---------------------------------------------------------
-
-// Creamos un arreglo con posibles descripciones del clima (solo para ejemplo)
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild",
-    "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-// Definimos una ruta GET (endpoint) en "/weatherforecast".
-// Cuando alguien accede a esa URL, se ejecuta el bloque de código que devuelve datos simulados.
-app.MapGet("/weatherforecast", () =>
-{
-    // Genera 5 días de pronóstico de forma aleatoria.
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)), // Fecha
-            Random.Shared.Next(-20, 55),                        // Temperatura en °C
-            summaries[Random.Shared.Next(summaries.Length)]      // Descripción aleatoria
-        ))
-        .ToArray();
-
-    // Retorna el resultado como un arreglo JSON.
-    return forecast;
-})
-.WithName("GetWeatherForecast") // Nombre del endpoint (útil para Swagger)
-.WithOpenApi();                 // Lo incluye en la documentación Swagger
-
+//app.UseHttpsRedirection();
 
 app.UseCors("DevCors");
-
-
 
 // ---------------------------------------------------------
 // 🧩 Sección: Inicio de la aplicación!!!!!!!!!!!!!!!!!!!!
