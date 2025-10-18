@@ -1,0 +1,6 @@
+@FacturaLite.Api_HostAddress = http://localhost:5155
+
+GET {{FacturaLite.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
