@@ -9,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddControllers(); // habilita controladores [ApiController]
+
 // ---------------------------------------------------------
 // 🧩 Sección: Registro de servicios
 // ---------------------------------------------------------
@@ -69,9 +71,13 @@ app.MapGet("/weatherforecast", () =>
 .WithName("GetWeatherForecast") // Nombre del endpoint (útil para Swagger)
 .WithOpenApi();                 // Lo incluye en la documentación Swagger
 
+
+
 // ---------------------------------------------------------
-// 🧩 Sección: Inicio de la aplicación
+// 🧩 Sección: Inicio de la aplicación!!!!!!!!!!!!!!!!!!!!
 // ---------------------------------------------------------
+
+app.MapControllers(); // mapea rutas de los controladores a HTTP
 
 // Arranca la aplicación web y la deja escuchando en el puerto configurado.
 app.Run();
