@@ -91,3 +91,6 @@ Con esto, la API ya entiende clases “Controller”.
 2) Crear el controlador ClientesController
   Crea el archivo:
     FacturaLite.Api/Controllers/ClientesController.cs
+
+ANTES DE EMPEZAR EL FRONTEND AÑADIR CONFIGURACION DE CORS🫠
+

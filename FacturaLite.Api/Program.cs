@@ -5,6 +5,18 @@ using Microsoft.EntityFrameworkCore;
 // Aquí se configuran los servicios que la app usará: controladores, base de datos, CORS, Swagger, etc.
 var builder = WebApplication.CreateBuilder(args);
 
+// CORS de desarrollo: permite que el front (Vite en 5173) llame a la API
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("DevCors", policy =>
+        policy.WithOrigins("http://localhost:5173", "https://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod());
+});
+
+builder.Services.AddControllers(); // ya lo tenías
+
+
 // Registramos el DbContext y le decimos que use SQLite con la conexión del appsettings.json
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -70,6 +82,9 @@ app.MapGet("/weatherforecast", () =>
 })
 .WithName("GetWeatherForecast") // Nombre del endpoint (útil para Swagger)
 .WithOpenApi();                 // Lo incluye en la documentación Swagger
+
+
+app.UseCors("DevCors");
 
 
 
