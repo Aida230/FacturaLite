@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FacturaLite.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+645e815005e40a2db56d197e9f1f3a66c21a5993")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c956a8ffe49a69e28865f0c553a0c0d831efe974")]
 [assembly: System.Reflection.AssemblyProductAttribute("FacturaLite.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FacturaLite.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

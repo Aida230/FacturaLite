@@ -62,14 +62,4 @@ app.MapControllers(); // mapea rutas de los controladores a HTTP
 // Arranca la aplicación web y la deja escuchando en el puerto configurado.
 app.Run();
 
-// ---------------------------------------------------------
-// 🧩 Record (tipo de dato inmutable para el ejemplo)
-// ---------------------------------------------------------
 
-// Define un tipo (record) llamado WeatherForecast.
-// Representa los datos que devuelve el endpoint: fecha, temperatura, resumen del clima.
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    // Propiedad calculada: convierte la temperatura de °C a °F.
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
