@@ -2,9 +2,10 @@ import { useState } from "react";
 import Layout from "./components/layout/Layout";
 import ClientesPage from "./pages/ClientesPage";
 import FacturasPage from "./pages/FacturasPage";
+import ProductosPage from "./pages/ProductosPage";
 
 export default function App() {
-  const [tab, setTab] = useState<"clientes" | "facturas">("facturas");
+  const [tab, setTab] = useState<"clientes" | "facturas" | "productos">("productos");
 
   return (
     <Layout>
@@ -21,9 +22,15 @@ export default function App() {
         >
           Facturas
         </button>
+        <button
+          className={`px-3 h-9 rounded-lg border ${tab === "productos" ? "bg-indigo-600 text-white border-indigo-600" : "bg-white"}`}
+          onClick={() => setTab("productos")}
+        >
+          Productos
+        </button>
       </div>
 
-      {tab === "facturas" ? <FacturasPage /> : <ClientesPage />}
+      {tab === "productos" ? <ProductosPage /> : tab === "facturas" ? <FacturasPage /> : <ClientesPage />}
     </Layout>
   );
 }

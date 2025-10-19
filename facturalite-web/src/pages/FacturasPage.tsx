@@ -3,6 +3,8 @@ import Button from "../components/shared/Button";
 import { listarFacturas, obtenerFactura, crearFactura, type CrearFacturaDto } from "../services/facturas.service";
 import type { Factura } from "../types/factura";
 import { listarClientes } from "../services/clientes.service";
+import { listarProductos } from "../services/productos.service";
+import type { Producto } from "../types/producto";
 
 export default function FacturasPage() {
   // listado
@@ -11,7 +13,7 @@ export default function FacturasPage() {
   const [error, setError] = useState<string | null>(null);
   const [expandidaId, setExpandidaId] = useState<number | null>(null);
 
-  // filtros (muy simples y opcionales)
+  // filtros
   const [fClienteId, setFClienteId] = useState<number | "">("");
   const [fDesde, setFDesde] = useState("");
   const [fHasta, setFHasta] = useState("");
@@ -23,9 +25,11 @@ export default function FacturasPage() {
   ]);
   const [creando, setCreando] = useState(false);
 
-  // para selects de clientes
+  // selects de clientes y productos
   const [clientes, setClientes] = useState<{ id: number; nombre: string }[]>([]);
+  const [productos, setProductos] = useState<Producto[]>([]);
 
+  // carga inicial de productos (para el selector) y clientes+facturas con filtros
   useEffect(() => {
     (async () => {
       try {
@@ -47,6 +51,17 @@ export default function FacturasPage() {
       }
     })();
   }, [fClienteId, fDesde, fHasta]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const list = await listarProductos(); // sin filtros
+        setProductos(list);
+      } catch {
+        setProductos([]);
+      }
+    })();
+  }, []);
 
   async function toggleDetalle(id: number) {
     try {
@@ -152,38 +167,78 @@ export default function FacturasPage() {
           <div className="md:col-span-4">
             <label className="block text-sm mb-2">Líneas</label>
             <div className="space-y-2">
-              {lineas.map((l, idx) => (
-                <div key={idx} className="flex gap-2">
-                  <input
-                    className="flex-1 h-10 rounded-lg border px-3"
-                    placeholder="ProductoId"
-                    type="number"
-                    value={l.productoId}
-                    onChange={e => {
-                      const v = e.target.value ? Number(e.target.value) : "";
-                      setLineas(prev => prev.map((x, i) => i === idx ? { ...x, productoId: v } : x));
-                    }}
-                  />
-                  <input
-                    className="w-36 h-10 rounded-lg border px-3"
-                    placeholder="Cantidad"
-                    type="number"
-                    min={1}
-                    value={l.cantidad}
-                    onChange={e => {
-                      const v = e.target.value ? Number(e.target.value) : "";
-                      setLineas(prev => prev.map((x, i) => i === idx ? { ...x, cantidad: v } : x));
-                    }}
-                  />
-                  <Button
-                    variant="ghost"
-                    onClick={() => setLineas(prev => prev.filter((_, i) => i !== idx))}
-                    disabled={lineas.length === 1}
-                  >
-                    Quitar
-                  </Button>
-                </div>
-              ))}
+              {lineas.map((l, idx) => {
+                const prod = productos.find(p => p.id === l.productoId);
+                const precio = prod?.precioUnitario ?? 0;
+                const iva = prod?.ivaPorcentaje ?? 0;
+                const cant = Number(l.cantidad) || 0;
+                const base = cant * precio;
+                const total = base * (1 + iva / 100);
+
+                return (
+                  <div key={idx} className="flex flex-col gap-2 md:flex-row md:items-center md:gap-2 p-2 border rounded-lg">
+                    {/* SELECT DE PRODUCTO */}
+                    <div className="flex-1">
+                      <label className="block text-xs text-gray-600 mb-1">Producto</label>
+                      <select
+                        className="w-full h-10 rounded-lg border px-3"
+                        value={l.productoId}
+                        onChange={e => {
+                          const v = e.target.value ? Number(e.target.value) : "";
+                          setLineas(prev => prev.map((x, i) => i === idx ? { ...x, productoId: v } : x));
+                        }}
+                      >
+                        <option value="">Selecciona un producto…</option>
+                        {productos.map(p => (
+                          <option key={p.id} value={p.id}>
+                            {p.nombre}{p.sku ? ` — ${p.sku}` : ""} · {p.precioUnitario.toFixed(2)}€ (+{p.ivaPorcentaje}%)
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* CANTIDAD */}
+                    <div className="md:w-40">
+                      <label className="block text-xs text-gray-600 mb-1">Cantidad</label>
+                      <input
+                        className="w-full h-10 rounded-lg border px-3"
+                        placeholder="Cantidad"
+                        type="number"
+                        min={1}
+                        value={l.cantidad}
+                        onChange={e => {
+                          const v = e.target.value ? Number(e.target.value) : "";
+                          setLineas(prev => prev.map((x, i) => i === idx ? { ...x, cantidad: v } : x));
+                        }}
+                      />
+                    </div>
+
+                    {/* PREVIEW IMPORTE (visual) */}
+                    <div className="grow text-sm text-gray-600 md:text-right">
+                      {prod && cant > 0 ? (
+                        <div className="md:min-w-60">
+                          <div>Base: {base.toFixed(2)} €</div>
+                          <div>IVA: {(base * iva / 100).toFixed(2)} €</div>
+                          <div className="font-medium">Total línea: {total.toFixed(2)} €</div>
+                        </div>
+                      ) : (
+                        <span className="text-xs">Selecciona producto y cantidad</span>
+                      )}
+                    </div>
+
+                    {/* QUITAR LÍNEA */}
+                    <div className="md:w-28">
+                      <Button
+                        variant="ghost"
+                        onClick={() => setLineas(prev => prev.filter((_, i) => i !== idx))}
+                        disabled={lineas.length === 1}
+                      >
+                        Quitar
+                      </Button>
+                    </div>
+                  </div>
+                );
+              })}
               <Button variant="ghost" onClick={() => setLineas(prev => [...prev, { productoId: "", cantidad: "" }])}>
                 + Añadir línea
               </Button>
@@ -191,7 +246,15 @@ export default function FacturasPage() {
           </div>
 
           <div className="md:col-span-4">
-            <Button onClick={onCrear} disabled={clienteId === "" || lineas.every(l => !l.productoId || !l.cantidad)} >
+            <Button
+              onClick={onCrear}
+              disabled={
+                clienteId === "" ||
+                lineas.length === 0 ||
+                lineas.some(l => !l.productoId || !l.cantidad) ||
+                creando
+              }
+            >
               {creando ? "Creando…" : "Crear factura"}
             </Button>
           </div>

@@ -8,13 +8,6 @@ export default function Header() {
             <span className="text-indigo-600">Factura</span>Lite
           </span>
         </div>
-
-        <nav className="hidden sm:flex items-center gap-2 text-sm">
-          <span className="px-3 py-1.5 rounded-xl bg-indigo-50 text-indigo-700 border border-indigo-100">
-            Clientes
-          </span>
-          {/* Cuando tengas más páginas, añade aquí “tabs” con estado activo/inactivo */}
-        </nav>
       </div>
     </header>
   );
