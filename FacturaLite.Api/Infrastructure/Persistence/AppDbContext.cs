@@ -18,6 +18,9 @@ namespace FacturaLite.Api.Infrastructure.Persistence
         // Por convención, este DbSet se mapeará a una tabla "Clientes".
         public DbSet<Cliente> Clientes => Set<Cliente>();
         public DbSet<Producto> Productos => Set<Producto>();
+        public DbSet<Factura> Facturas => Set<Factura>();
+        public DbSet<FacturaLinea> FacturasLineas => Set<FacturaLinea>();
+
 
 
         // Aquí podríamos afinar el mapeo (nombres de tablas/columnas, índices, etc.)
@@ -25,8 +28,42 @@ namespace FacturaLite.Api.Infrastructure.Persistence
         {
             base.OnModelCreating(modelBuilder);
 
-            // Ejemplo de configuración mínima (opcional por ahora):
-            // modelBuilder.Entity<Cliente>().Property(c => c.Nombre).HasMaxLength(200).IsRequired();
+            // === Configuración de precisión para decimales (dinero) ===
+            modelBuilder.Entity<Producto>()
+                .Property(p => p.PrecioUnitario)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<Producto>()
+                .Property(p => p.IvaPorcentaje)
+                .HasPrecision(5, 2);
+
+            modelBuilder.Entity<FacturaLinea>()
+                .Property(l => l.Cantidad)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<FacturaLinea>()
+                .Property(l => l.PrecioUnitario)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<FacturaLinea>()
+                .Property(l => l.IvaPorcentaje)
+                .HasPrecision(5, 2);
+            modelBuilder.Entity<FacturaLinea>()
+                .Property(l => l.ImporteBase)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<FacturaLinea>()
+                .Property(l => l.ImporteIva)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<FacturaLinea>()
+                .Property(l => l.ImporteTotal)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Factura>()
+                .Property(f => f.TotalBase)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<Factura>()
+                .Property(f => f.TotalIva)
+                .HasPrecision(18, 2);
+            modelBuilder.Entity<Factura>()
+                .Property(f => f.Total)
+                .HasPrecision(18, 2);
         }
     }
 }
