@@ -17,6 +17,8 @@ namespace FacturaLite.Api.Infrastructure.Persistence
         // Cada DbSet<T> representa una tabla.
         // Por convención, este DbSet se mapeará a una tabla "Clientes".
         public DbSet<Cliente> Clientes => Set<Cliente>();
+        public DbSet<Producto> Productos => Set<Producto>();
+
 
         // Aquí podríamos afinar el mapeo (nombres de tablas/columnas, índices, etc.)
         protected override void OnModelCreating(ModelBuilder modelBuilder)
